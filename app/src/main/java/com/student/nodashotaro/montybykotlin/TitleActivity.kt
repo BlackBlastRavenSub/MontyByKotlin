@@ -23,27 +23,32 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-
-
-
-
 class TitleActivity : AppCompatActivity() {
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var mStorageRef: StorageReference? = null
+    val key = "color"
+    val value = "blue"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         mStorageRef = FirebaseStorage.getInstance().getReference()
-        val key = "color"
-        val value = "red"
+
         val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference(key)
-        ref.addValueEventListener(object: ValueEventListener {
+        val ref_name = database.getReference("name")//key
+        ref_name.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val value = dataSnapshot.value
             }
-
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("onCancelled", "error:", error.toException())
+            }
+        })
+        val ref_pass = database.getReference("pass")
+        ref_pass.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val value = dataSnapshot.value
+            }
             override fun onCancelled(error: DatabaseError) {
                 Log.w("onCancelled", "error:", error.toException())
             }
@@ -52,35 +57,35 @@ class TitleActivity : AppCompatActivity() {
 
         verticalLayout {
             padding = dip(30)
-            val test = editText {
+            val name = editText {
                 hint = "Name"
                 textSize = 24f
             }
-            editText {
+            val pass= editText {
                 hint = "Password"
                 textSize = 24f
-                textColor= Color.RED
+                textColor = Color.RED
             }
             button("Input") {
                 textSize = 26f
                 onClick {
-                    ref.setValue(value)
+                    ref_name.setValue("${name.text}")
+                    ref_pass.setValue("${pass.text}")
                 }
-            }.lparams(width= matchParent){
-                horizontalMargin=dip(5)
-                topMargin=dip(10)
+            }.lparams(width = matchParent) {
+                horizontalMargin = dip(5)
+                topMargin = dip(10)
 
             }
             button("Putout") {
                 textSize = 26f
                 onClick {
-                    this@button.text = value.toString()
+                    this@button.text = name.toString()
                 }
-            }.lparams(width= matchParent){
-                horizontalMargin=dip(5)
-                topMargin=dip(10)
+            }.lparams(width = matchParent) {
+                horizontalMargin = dip(5)
+                topMargin = dip(10)
             }
         }
     }
-
 }
