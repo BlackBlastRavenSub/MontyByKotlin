@@ -22,15 +22,29 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.AdRequest//バナー広告
+import com.google.android.gms.ads.AdView//バナー広告
+
+
 
 class TitleActivity : AppCompatActivity() {
+
+    lateinit var mAdView : AdView
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var mStorageRef: StorageReference? = null
     val key = "color"
     val value = "blue"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_title);
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544/6300978111")
+        mAdView = find(R.id.adView)
+        val adRequest = AdRequest.Builder().build()
+        mAdView.loadAd(adRequest)
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         mStorageRef = FirebaseStorage.getInstance().getReference()
 
@@ -86,6 +100,7 @@ class TitleActivity : AppCompatActivity() {
                 horizontalMargin = dip(5)
                 topMargin = dip(10)
             }
+
         }
     }
 }
